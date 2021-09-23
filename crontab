@@ -1,0 +1,1 @@
+*/15 * * * * domain-connect-dyndns --config /config.json --all update
