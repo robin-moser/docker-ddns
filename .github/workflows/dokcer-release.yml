@@ -1,0 +1,49 @@
+name: Docker Release
+
+env:
+  IMAGENAME: ddns
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+
+      -
+        name: Checkout code
+        uses: actions/checkout@v2
+
+      -
+        name: Setup buildx
+        uses: docker/setup-buildx-action@v1
+
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Login to private Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      -
+        name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: ./Dockerfile
+          push: true
+          tags: |
+            robinmoser/${{ env.IMAGENAME }}:latest
+            ${{ secrets.REGISTRY_URL }}/${{ env.IMAGENAME }}:${{ github.run_number }}
+            ${{ secrets.REGISTRY_URL }}/${{ env.IMAGENAME }}:latest
