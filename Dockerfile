@@ -2,12 +2,12 @@
 # Dockerfile: robinmoser/ddns
 # ++++++++++++++++++++++++++++++++++++++
 
-FROM python:3.9-alpine3.14 as build
+FROM python:3.12-alpine as build
 
 RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev
 RUN pip install --prefix=/install domain-connect-dyndns
 
-FROM python:3.9-alpine3.14
+FROM python:3.12-alpine
 LABEL maintainer="Robin Moser"
 
 ENV TZ="Europe/Berlin"
