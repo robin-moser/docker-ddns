@@ -7,6 +7,10 @@ FROM python:3.12-alpine as build
 RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev
 RUN pip install --prefix=/install domain-connect-dyndns
 
+# Disable public nameservers, only use local resolver
+RUN path=$(find /install -name domain_update.py) && \
+    sed -i 's/^my_resolver.nameservers =/# my_resolver.nameservers =/' $path
+
 FROM python:3.12-alpine
 LABEL maintainer="Robin Moser"
 
